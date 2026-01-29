@@ -1,20 +1,21 @@
-name: Restart Azure WebApp + Warmup
+name: Restart Selected Azure WebApps + Warmup
 
 on:
   schedule:
-    - cron: "0 23 * * *"   # France ~01:00 (CEST)
+    - cron: "0 23 * * *"   # 法国约 01:00
   workflow_dispatch:
 
 permissions:
-  id-token: write   # 必须，用于 OIDC
+  id-token: write
   contents: read
 
 jobs:
   restart:
     runs-on: ubuntu-latest
+    environment: prod
 
     steps:
-      # 🔐 OIDC 登录 Azure（无 client secret）
+      # 🔐 Azure OIDC 登录
       - name: Azure Login (OIDC)
         uses: azure/login@v2
         with:
@@ -22,19 +23,41 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: 0b218d59-75a0-4c88-82cf-61244617419d
 
-      # 🔄 重启 App Service
-      - name: Restart Azure Web App (osaka-docker)
+      # 🔁 批量重启 + warm-up
+      - name: Restart selected web apps
         run: |
-          az webapp restart \
-            --name osaka-docker \
-            --resource-group adi-windows-rg-prod-westeu
+          RESOURCE_GROUP="adi-windows-rg-prod-westeu"
 
-      # ⏳ 等待容器真正启动
-      - name: Wait for app to be ready
-        run: sleep 60
+          APPS=(
+            adiresto-akira
+            adiresto-dancesushi-puteaux-docker
+            adiresto-sushibry
+            adiresto-sushiyummy
+            adiresto-toto
+            aimthai-core
+            bonheur-core
+            dancesushi-core
+            minato-core
+            osaka-docker
+            sweetcakeparis-core
+          )
 
-      # 🌐 Warm-up：访问关键页面
-      - name: Warm up nopCommerce page
-        run: |
-          curl -L --silent --show-error --fail \
-            https://www.osakapoissy.fr/makis-signatures
+          for APP in "${APPS[@]}"; do
+            echo "=============================="
+            echo "Restarting $APP"
+            echo "=============================="
+
+            az webapp restart \
+              --name "$APP" \
+              --resource-group "$RESOURCE_GROUP" \
+              || echo "⚠️ Restart failed for $APP"
+
+            echo "⏳ Waiting 60s for $APP..."
+            sleep 60
+
+            echo "🌐 Warm-up $APP"
+            curl -L --fail --silent "https://www.${APP#*-}.fr" \
+              || echo "⚠️ Warm-up failed for $APP"
+
+            echo ""
+          done

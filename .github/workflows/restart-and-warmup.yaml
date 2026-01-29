@@ -12,7 +12,6 @@ permissions:
 jobs:
   restart:
     runs-on: ubuntu-latest
-    environment: prod
 
     steps:
       # 🔐 Azure OIDC 登录

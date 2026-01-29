@@ -1,4 +1,4 @@
-name: Restart Selected Azure WebApps + Warmup
+name: Restart Selected Azure WebApps + Global Warmup
 
 on:
   schedule:
@@ -12,6 +12,7 @@ permissions:
 jobs:
   restart:
     runs-on: ubuntu-latest
+    environment: prod
 
     steps:
       # 🔐 Azure OIDC 登录
@@ -22,8 +23,8 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: 0b218d59-75a0-4c88-82cf-61244617419d
 
-      # 🔁 批量重启 + warm-up
-      - name: Restart selected web apps
+      # 🔁 Step 1：依次重启（不等待）
+      - name: Restart selected web apps (no wait)
         run: |
           RESOURCE_GROUP="adi-windows-rg-prod-westeu"
 
@@ -42,21 +43,38 @@ jobs:
           )
 
           for APP in "${APPS[@]}"; do
-            echo "=============================="
-            echo "Restarting $APP"
-            echo "=============================="
-
+            echo "🔄 Restarting $APP"
             az webapp restart \
               --name "$APP" \
               --resource-group "$RESOURCE_GROUP" \
               || echo "⚠️ Restart failed for $APP"
+          done
 
-            echo "⏳ Waiting 60s for $APP..."
-            sleep 60
+      # ⏳ Step 2：统一等待
+      - name: Wait for all apps to boot
+        run: |
+          echo "⏳ Waiting 60 seconds for all apps to start..."
+          sleep 60
 
-            echo "🌐 Warm-up $APP"
-            curl -L --fail --silent "https://www.${APP#*-}.fr" \
-              || echo "⚠️ Warm-up failed for $APP"
+      # 🌐 Step 3：统一 warm-up 所有官网
+      - name: Warm up all websites
+        run: |
+          URLS=(
+            https://www.akira93.fr/sushi-2
+            https://puteaux.dancesushi.fr/menus
+            https://www.sushibry.fr/special-roll-2
+            https://www.sushi-yummy.fr/nos-menus-2
+            https://www.totoo.fr/plateaux-2
+            https://pontcolbert.aimthai.fr/nos-specialite
+            https://www.bonheur-ruan.fr/hors-d-oeuvre
+            https://colombes.dancesushi.fr/menus
+            https://www.sushiminato.fr/sushi-2
+            https://www.osakapoissy.fr/makis-signatures
+            https://www.sweetcakeparis.fr/
+          )
 
-            echo ""
+          for URL in "${URLS[@]}"; do
+            echo "🌐 Warming up $URL"
+            curl -L --silent --fail "$URL" \
+              || echo "⚠️ Warm-up failed for $URL"
           done

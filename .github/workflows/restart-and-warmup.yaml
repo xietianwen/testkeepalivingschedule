@@ -1,0 +1,40 @@
+name: Restart Azure WebApp + Warmup
+
+on:
+  schedule:
+    - cron: "0 23 * * *"   # France ~01:00 (CEST)
+  workflow_dispatch:
+
+permissions:
+  id-token: write   # 必须，用于 OIDC
+  contents: read
+
+jobs:
+  restart:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 🔐 OIDC 登录 Azure（无 client secret）
+      - name: Azure Login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: 0b218d59-75a0-4c88-82cf-61244617419d
+
+      # 🔄 重启 App Service
+      - name: Restart Azure Web App (osaka-docker)
+        run: |
+          az webapp restart \
+            --name osaka-docker \
+            --resource-group adi-windows-rg-prod-westeu
+
+      # ⏳ 等待容器真正启动
+      - name: Wait for app to be ready
+        run: sleep 60
+
+      # 🌐 Warm-up：访问关键页面
+      - name: Warm up nopCommerce page
+        run: |
+          curl -L --silent --show-error --fail \
+            https://www.osakapoissy.fr/makis-signatures

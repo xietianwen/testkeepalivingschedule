@@ -72,8 +72,10 @@ jobs:
             https://www.sweetcakeparis.fr/
           )
 
+          echo "🌐 Fire-and-forget warm-up (parallel, ignore results)"
+          
           for URL in "${URLS[@]}"; do
-            echo "🌐 Warming up $URL"
-            curl -L --silent --fail "$URL" \
-              || echo "⚠️ Warm-up failed for $URL"
+            curl -L --silent "$URL" >/dev/null 2>&1 &
           done
+          
+          echo "🚀 Warm-up requests sent (not waiting)"

@@ -35,7 +35,6 @@ jobs:
             aimthai-core
             bonbeur-core
             dancesushi-core
-            minato-core
             osaka-docker
             sweetcakeparis-core
           )

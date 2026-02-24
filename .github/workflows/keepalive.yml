@@ -11,13 +11,13 @@ jobs:
       - name: curl sites
         run: |
           curl -fsS https://www.totoo.fr/plateaux-2 || true
-          curl -fsS https://pontcolbert.aimthai.fr/ || true
-          curl -fsS https://www.akira93.fr/ || true
-          curl -fsS https://colombes.dancesushi.fr/ || true
+          curl -fsS https://pontcolbert.aimthai.fr/nos-specialite || true
+          curl -fsS https://www.akira93.fr/sushi-2 || true
+          curl -fsS https://colombes.dancesushi.fr/menus || true
           curl -fsS https://puteaux.dancesushi.fr/ || true
-          curl -fsS https://www.sushibry.fr/ || true
+          curl -fsS https://www.sushibry.fr//special-roll-2 || true
           curl -fsS https://www.sushi-yummy.fr/ || true
-          curl -fsS https://www.bonheur-ruan.fr/ || true
-          curl -fsS https://www.kunchapai.eu/ || true
+          curl -fsS https://www.bonheur-ruan.fr/hors-d-oeuvre || true
+          curl -fsS https://www.kunchapai.eu/plats-2 || true
           curl -fsS https://www.sweetcakeparis.fr/ || true
           curl -fsS https://www.osakapoissy.fr/makis-signatures || true

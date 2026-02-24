@@ -2,7 +2,7 @@ name: keepalive
 
 on:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "*/30 * * * *"
   workflow_dispatch:   # 👈 加这一行
 jobs:
   ping:
@@ -10,7 +10,7 @@ jobs:
     steps:
       - name: curl sites
         run: |
-          curl -fsS https://www.totoo.fr/ || true
+          curl -fsS https://www.totoo.fr/plateaux-2 || true
           curl -fsS https://pontcolbert.aimthai.fr/ || true
           curl -fsS https://www.akira93.fr/ || true
           curl -fsS https://colombes.dancesushi.fr/ || true
@@ -20,4 +20,4 @@ jobs:
           curl -fsS https://www.bonheur-ruan.fr/ || true
           curl -fsS https://www.kunchapai.eu/ || true
           curl -fsS https://www.sweetcakeparis.fr/ || true
-          curl -fsS https://www.osakapoissy.fr/ || true
+          curl -fsS https://www.osakapoissy.fr/makis-signatures || true

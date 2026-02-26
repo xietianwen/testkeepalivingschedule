@@ -20,4 +20,4 @@ jobs:
           curl -fsS https://www.bonheur-ruan.fr/hors-d-oeuvre || true
           curl -fsS https://www.kunchapai.eu/plats-2 || true
           curl -fsS https://www.sweetcakeparis.fr/ || true
-          curl -fsS https://www.osakapoissy.fr/makis-signatures || true
+          curl -fsS https://osaka-docker-dkbbgygna0c2ezg8.westeurope-01.azurewebsites.net/makis-signatures || true

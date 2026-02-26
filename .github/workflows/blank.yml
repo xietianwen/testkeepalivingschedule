@@ -1,0 +1,51 @@
+name: nop-scheduler
+
+on:
+  schedule:
+    - cron: "*/1 * * * *"
+  workflow_dispatch:
+
+jobs:
+  scheduler:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Run nopCommerce scheduled tasks
+        run: |
+          now=$(date +%s)
+
+          BASE_URL="https://osaka-docker-dkbbgygna0c2ezg8.westeurope-01.azurewebsites.net"
+
+          run_task () {
+            curl -X POST "$BASE_URL/scheduletask/runtask" \
+              -H "Content-Type: application/x-www-form-urlencoded" \
+              -d "taskType=$1" || true
+          }
+
+          # 30 seconds task (GitHub最小1分钟，强制每分钟执行一次)
+          run_task "Nop.Services.Common.StoreClosedTask, Nop.Services"
+
+          # 60 seconds
+          if (( now % 60 == 0 )); then
+            run_task "Nop.Services.Messages.QueuedMessagesSendTask, Nop.Services"
+          fi
+
+          # 300 seconds
+          if (( now % 300 == 0 )); then
+            run_task "Nop.Services.Common.KeepAliveTask, Nop.Services"
+          fi
+
+          # 600 seconds
+          if (( now % 600 == 0 )); then
+            run_task "Nop.Services.Customers.DeleteGuestsTask, Nop.Services"
+          fi
+
+          # 3600 seconds
+          if (( now % 3600 == 0 )); then
+            run_task "Nop.Services.Logging.ClearLogTask, Nop.Services"
+          fi
+
+          # 360000 seconds (100小时)
+          if (( now % 360000 == 0 )); then
+            run_task "Nop.Plugin.Misc.SendinBlue.Services.SynchronizationTask, Nop.Plugin.Misc.SendinBlue"
+          fi

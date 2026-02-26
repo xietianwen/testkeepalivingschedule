@@ -9,11 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: curl sites
-        run: |
-          curl -X POST https://osaka-docker-dkbbgygna0c2ezg8.westeurope-01.azurewebsites.net/scheduletask/runtask \
-              -H "Content-Type: application/x-www-form-urlencoded" \
-              -d "taskType=Nop.Services.Messages.QueuedMessagesSendTask, Nop.Services" || true
-              
+        run: |             
           curl -fsS https://www.totoo.fr/plateaux-2 || true
           curl -fsS https://pontcolbert.aimthai.fr/nos-specialite || true
           curl -fsS https://www.akira93.fr/sushi-2 || true

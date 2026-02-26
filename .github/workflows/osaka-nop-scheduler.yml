@@ -1,4 +1,4 @@
-name: nop-scheduler
+name: osaka-nop-scheduler
 
 on:
   schedule:

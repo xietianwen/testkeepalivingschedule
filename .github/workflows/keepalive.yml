@@ -10,6 +10,10 @@ jobs:
     steps:
       - name: curl sites
         run: |
+          curl -X POST https://www.osakapoissy.fr/scheduletask/runtask \
+              -H "Content-Type: application/x-www-form-urlencoded" \
+              -d "taskType=Nop.Services.Messages.QueuedMessagesSendTask, Nop.Services" || true
+              
           curl -fsS https://www.totoo.fr/plateaux-2 || true
           curl -fsS https://pontcolbert.aimthai.fr/nos-specialite || true
           curl -fsS https://www.akira93.fr/sushi-2 || true

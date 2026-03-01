@@ -12,6 +12,22 @@ jobs:
     steps:
       - name: Trigger Send Emails Task
         run: |
-          curl -X POST https://osaka-docker-dkbbgygna0c2ezg8.westeurope-01.azurewebsites.net/scheduletask/runtask \
-            -H "Content-Type: application/x-www-form-urlencoded" \
-            -d "taskType=Nop.Services.Messages.QueuedMessagesSendTask, Nop.Services" || true
+          URLS=(
+            https://osaka-docker-dkbbgygna0c2ezg8.westeurope-01.azurewebsites.net/scheduletask/runtask
+            https://www.sushi-yummy.fr/scheduletask/runtask
+            https://www.bonheur-ruan.fr/scheduletask/runtask
+            https://www.totoo.fr/scheduletask/runtask
+            https://www.sushiminato.fr/scheduletask/runtask
+            https://pontcolbert.aimthai.fr/scheduletask/runtask
+            https://www.akira93.fr/scheduletask/runtask
+            https://www.kunchapai.eu/scheduletask/runtask
+            https://colombes.dancesushi.fr/scheduletask/runtask
+            https://puteaux.dancesushi.fr/scheduletask/runtask
+          )
+
+          for URL in "${URLS[@]}"; do
+            curl -X POST "$URL" \
+              -H "Content-Type: application/x-www-form-urlencoded" \
+              -d "taskType=Nop.Services.Messages.QueuedMessagesSendTask, Nop.Services" || true &
+          done
+          wait

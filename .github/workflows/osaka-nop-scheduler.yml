@@ -24,6 +24,7 @@ jobs:
               https://colombes.dancesushi.fr/scheduletask/runtask
               https://puteaux.dancesushi.fr/scheduletask/runtask
               https://www.sushibry.fr/scheduletask/runtask
+              https://www.sweetcakeparis.fr/scheduletask/runtask
             )
             
             TASKS=(

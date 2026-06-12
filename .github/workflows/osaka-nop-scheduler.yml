@@ -23,6 +23,7 @@ jobs:
               https://www.kunchapai.eu/scheduletask/runtask
               https://colombes.dancesushi.fr/scheduletask/runtask
               https://puteaux.dancesushi.fr/scheduletask/runtask
+              https://www.sushibry.fr/scheduletask/runtask
             )
             
             TASKS=(
